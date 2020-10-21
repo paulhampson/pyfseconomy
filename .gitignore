@@ -1,0 +1,8 @@
+
+venv/
+
+pyfseconomy/__pycache__/
+
+.idea/
+/build/
+/dist/
