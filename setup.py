@@ -12,6 +12,9 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url='https://github.com/paulhampson/pyfseconomy',
     packages=setuptools.find_packages(),
+    package_data={
+        "pyfseconomy": ["icaodata.csv"],
+    },
     install_requires=[
         'pandas~=1.1.3',
         'requests~=2.24.0',
