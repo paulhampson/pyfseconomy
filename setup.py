@@ -10,7 +10,7 @@ setuptools.setup(
     description='Library for interacting with the FS Economy API',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url='git@github.com:paulhampson/pyfseconomy.git',
+    url='https://github.com/paulhampson/pyfseconomy',
     packages=setuptools.find_packages(),
     install_requires=[
         'pandas~=1.1.3',
