@@ -13,6 +13,7 @@ class AircraftTypes(Enum):
     C172_SKYHAWK = auto()
     C152_AEROBAT = auto()
     CITATION_X = auto()
+    A320 = auto()
     MSFS_A320 = auto()
     BOEING_737_800 = auto()
     BOEING_747_400 = auto()
@@ -41,6 +42,8 @@ class AircraftTypes(Enum):
             return "Cessna 152 Aerobat"
         elif self.value == self.CITATION_X.value:
             return "Cessna Citation X"
+        elif self.value == self.A320.value:
+            return "Airbus A320"
         elif self.value == self.MSFS_A320.value:
             return "Airbus A320 (MSFS)"
         elif self.value == self.BOEING_737_800.value:
