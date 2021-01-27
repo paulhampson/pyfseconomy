@@ -18,6 +18,7 @@ class AircraftTypes(Enum):
     BOEING_737_800 = auto()
     BOEING_747_400 = auto()
     CESSNA_GRAND_CARAVAN = auto()
+    CITATION_CJ4_MSFS = auto()
 
     @staticmethod
     def list():
@@ -52,6 +53,8 @@ class AircraftTypes(Enum):
             return "Boeing 747-400"
         elif self.value == self.CESSNA_GRAND_CARAVAN.value:
             return "Cessna 208 Caravan"
+        elif self.value == self.CITATION_CJ4_MSFS.value:
+            return "Cessna Citation CJ4 (MSFS)"
         else:
             return f"Unknown plane type - {self.name}"
 
