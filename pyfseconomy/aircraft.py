@@ -8,17 +8,22 @@ class AircraftTypes(Enum):
     """
     Enumeration of aircraft and associated FSEconomy alias strings
     """
-    TBM_930 = auto()
-    KING_AIR_350 = auto()
-    C172_SKYHAWK = auto()
-    C152_AEROBAT = auto()
-    CITATION_X = auto()
     A320 = auto()
     MSFS_A320 = auto()
+    KING_AIR_350 = auto()
     BOEING_737_800 = auto()
     BOEING_747_400 = auto()
+    BOMBARDIER_CRJ_200 = auto()
+    BOMBARDIER_CRJ_700 = auto()
+    BOMBARDIER_DASH8_Q400 = auto()
+    C172_SKYHAWK = auto()
+    C152_AEROBAT = auto()
     CESSNA_GRAND_CARAVAN = auto()
     CITATION_CJ4_MSFS = auto()
+    CITATION_X = auto()
+    EMBRAER_PHENOM_300 = auto()
+    TBM_930 = auto()
+    TBM_850 = auto()
 
     @staticmethod
     def list():
@@ -35,6 +40,8 @@ class AircraftTypes(Enum):
         """
         if self.value == self.TBM_930.value:
             return "Socata TBM 930 (MSFS)"
+        elif self.value == self.TBM_850.value:
+            return "Socata TBM 830"
         elif self.value == self.KING_AIR_350.value:
             return "Beechcraft King Air 350"
         elif self.value == self.C172_SKYHAWK.value:
@@ -55,6 +62,14 @@ class AircraftTypes(Enum):
             return "Cessna 208 Caravan"
         elif self.value == self.CITATION_CJ4_MSFS.value:
             return "Cessna Citation CJ4 (MSFS)"
+        elif self.value == self.EMBRAER_PHENOM_300.value:
+            return "Embraer Phenom 300"
+        elif self.value == self.BOMBARDIER_CRJ_200.value:
+            return "Bombardier CRJ-200ER"
+        elif self.value == self.BOMBARDIER_CRJ_700.value:
+            return "Bombardier CRJ700-ER"
+        elif self.value == self.BOMBARDIER_DASH8_Q400.value:
+            return "Bombardier Dash-8 Q400"
         else:
             return f"Unknown plane type - {self.name}"
 
