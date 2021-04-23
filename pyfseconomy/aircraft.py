@@ -41,7 +41,7 @@ class AircraftTypes(Enum):
         if self.value == self.TBM_930.value:
             return "Socata TBM 930 (MSFS)"
         elif self.value == self.TBM_850.value:
-            return "Socata TBM 830"
+            return "Socata TBM 850"
         elif self.value == self.KING_AIR_350.value:
             return "Beechcraft King Air 350"
         elif self.value == self.C172_SKYHAWK.value:
