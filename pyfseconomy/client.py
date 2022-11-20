@@ -81,6 +81,25 @@ class Client:
         self._all_plane_info = None
         self._make_model_list = None
 
+    def _run_request(self, query_parameters):
+        """
+        Executes the request to the FSE servers.
+
+        Throws FSEConnectionError if the request is not successful.
+
+        :param query_parameters: Dictionary of URL parameters
+        :return: Requests class:`Response ` object
+        """
+
+        r = requests.get(self.URL_ROOT, params=query_parameters)
+
+        if r.status_code != requests.codes.ok:
+            raise FSEConnectionError(f"Unable to retrieve data - status code is {r.status_code}", r.text)
+        if r.text.startswith("<Error>"):
+            raise FSEConnectionError("Cannot collect data from FSE server", r.text)
+
+        return r
+
     def get_plane_data(self, force_update=False):
         """
         Retrieves a list of planes from FSE and caches it. Will return the same list unless forced to update.
@@ -93,12 +112,7 @@ class Client:
                                 'format': str(self.DataFormat.CSV),
                                 'query': 'aircraft',
                                 'search': 'configs'}
-            r = requests.get(self.URL_ROOT, params=query_parameters)
-
-            if r.status_code != requests.codes.ok:
-                raise FSEConnectionError(f"Unable to retrieve data - status code is {r.status_code}", r.text)
-            if r.text.startswith("<Error>"):
-                raise FSEConnectionError("Cannot collect data from FSE server", r.text)
+            r = self._run_request(query_parameters)
 
             cleaned_text = "\n".join(r.text.splitlines())
             cleaned_text = cleaned_text.replace(",\n", "\n")
@@ -133,15 +147,11 @@ class Client:
             'search': 'makemodel',
             'makemodel': plane_type
         }
-        r = requests.get(self.URL_ROOT, params=query_parameters)
-
-        if r.status_code != requests.codes.ok:
-            raise FSEConnectionError(f"Unable to retrieve data - status code is {r.status_code}", r.text)
-        if r.text.startswith("<Error>"):
-            raise FSEConnectionError("Cannot collect data from FSE server", r.text)
+        r = self._run_request(query_parameters)
 
         plane_data = pd.read_csv(io.StringIO(r.text), encoding=r.encoding)
 
+        # Filtering operations for rentable, time since last 100 hour
         if rentable_only:
             plane_data = plane_data[(plane_data['RentedBy'] == 'Not rented.') &
                                     ((plane_data['RentalDry'] > 0.0) | (plane_data['RentalWet'] > 0.0))]
@@ -151,6 +161,26 @@ class Client:
         plane_data = plane_data[(plane_data['TimeLast100hr'] <= max_hours_since_100hr)]
 
         return plane_data
+
+    def get_user_planes(self, username):
+        """
+        Retrieves details of planes that the user owns.
+
+        :return: Pandas data frame with the result of the query, filtered as requested
+        """
+
+        query_parameters = {
+            'userkey': self._access_key,
+            'format': str(self.DataFormat.CSV),
+            'query': 'aircraft',
+            'search': 'ownername',
+            'ownername': username
+        }
+        r = self._run_request(query_parameters)
+
+        user_plane_data = pd.read_csv(io.StringIO(r.text), encoding=r.encoding)
+
+        return user_plane_data
 
     def get_location_available_jobs(self, icao_list, max_cargo=100000, max_passengers=1000,
                                     limit_trip_type_to: TripTypes = None):
@@ -171,11 +201,7 @@ class Client:
             'search': 'jobsfrom',
             'icaos': icao_list_for_query
         }
-        r = requests.get(self.URL_ROOT, params=query_parameters)
-        if r.status_code != requests.codes.ok:
-            raise FSEConnectionError(f"Unable to retrieve data - status code is {r.status_code}", r.text)
-        if r.text.startswith("<Error>"):
-            raise FSEConnectionError("Cannot collect data from FSE server", r.text)
+        r = self._run_request(query_parameters)
 
         plane_data = pd.read_csv(io.StringIO(r.text), encoding=r.encoding)
 

@@ -6,7 +6,7 @@ from pyfseconomy.utils import plane_loader
 
 
 def highest_paying_jobs(fse_client, plane_type, distance_limit=None, minimum_pay=0, top_n=5,
-                        desired_trip_type=fse.TripTypes.TRIP_ONLY):
+                        desired_trip_type=fse.TripTypes.TRIP_ONLY, username=None):
     """
     For a type of aircraft find the top N which are rentable and have best $/NM jobs (accounting for capacity)
 
@@ -16,11 +16,15 @@ def highest_paying_jobs(fse_client, plane_type, distance_limit=None, minimum_pay
     :param fse_client: FSE Client instance
     :param plane_type: String to define which requested_plane the query should be completed with
     :param top_n: How many top jobs to return
+    :param username: Set this if search is constrained to only the planes owned by the specified username.
     :return: Top N potential jobs for this aircraft
     """
     # Search for non-rentable if choosing all in
     rentable_only = desired_trip_type != fse.TripTypes.ALL_IN
-    plane_list = fse_client.get_planes_of_type(plane_type, rentable_only=rentable_only)
+    if username:
+        plane_list = fse_client.get_user_planes(username)
+    else:
+        plane_list = fse_client.get_planes_of_type(plane_type, rentable_only=rentable_only)
     plane_location_list = []
     for _, plane in plane_list.iterrows():
         if plane['Location'] != 'In Flight':
@@ -89,18 +93,26 @@ def print_jobs(jobs):
             f"{job['dollar_per_nm']:>8.2f} {job['assignments']}")
 
 
-def info_wizard():
+def info_wizard(user_search=False):
     """
     Gather the requested_plane type, minimum job pay, number of jobs to display and the trip type.
-    :return:
+
+    :param user_search: Set to True if the search is going to be restricted to the users planes. In this case we won't
+                        ask which planes they are interested in.
+    :return: Values selected in response to queries.
     """
-    plane_list = [fse.AircraftTypes.KING_AIR_350, fse.AircraftTypes.TBM_930, fse.AircraftTypes.CITATION_X,
-                  fse.AircraftTypes.C172_SKYHAWK, fse.AircraftTypes.CESSNA_GRAND_CARAVAN, fse.AircraftTypes.MSFS_A320]
-    print("Select plane type:")
-    for idx, plane in enumerate(plane_list):
-        print(f"\t[{idx}] {plane}")
-    plane_idx = int(input("? "))
-    selected_plane = plane_list[plane_idx]
+    if not user_search:
+        plane_list = [fse.AircraftTypes.KING_AIR_350, fse.AircraftTypes.TBM_930, fse.AircraftTypes.CITATION_X,
+                      fse.AircraftTypes.C172_SKYHAWK, fse.AircraftTypes.CESSNA_GRAND_CARAVAN, fse.AircraftTypes.MSFS_A320]
+        print("Select plane type:")
+        for idx, plane in enumerate(plane_list):
+            print(f"\t[{idx}] {plane}")
+        plane_idx = int(input("? "))
+        selected_plane = plane_list[plane_idx]
+    else:
+        print("INFO: Search will be constrained to user's planes.")
+        selected_plane = "the user's planes"
+
     min_job_pay = int(input("Required minimum job pay? "))
     max_distance = int(input("Maximum distance between airports? "))
     job_count = int(input("How many jobs to display? "))
@@ -117,15 +129,18 @@ def info_wizard():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Tool to find the best paying jobs for a particular aircraft')
     parser.add_argument('--access-key', dest='access_key', nargs=1)
+    parser.add_argument('--username', dest='username', nargs=1, default=None)
     args = parser.parse_args()
 
     run_again = True
     client = fse.Client(args.access_key)
-    requested_plane, min_pay, count, distance, trip_type = info_wizard()
+    user_plane_search = args.username is not None
+    requested_plane, min_pay, count, distance, trip_type = info_wizard(user_plane_search)
     while run_again:
         best_jobs_per_nm, best_jobs_pay = highest_paying_jobs(client, requested_plane, distance_limit=distance,
                                                               minimum_pay=min_pay,
-                                                              top_n=count, desired_trip_type=trip_type)
+                                                              top_n=count, desired_trip_type=trip_type,
+                                                              username=args.username)
         print(f"\nBest jobs per nm for {requested_plane} over ${min_pay}, max distance of {distance}")
         print_jobs(best_jobs_per_nm)
 
