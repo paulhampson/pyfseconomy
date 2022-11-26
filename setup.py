@@ -16,9 +16,9 @@ setuptools.setup(
         "pyfseconomy": ["icaodata.csv"],
     },
     install_requires=[
-        'pandas~=1.1.3',
-        'requests~=2.24.0',
-        'geographiclib~=1.50',
+        'pandas~=1.5.2',
+        'requests~=2.28.1',
+        'geographiclib~=2.0',
     ],
     python_requires='>=3.8',
     classifiers=[
