@@ -24,6 +24,7 @@ class AircraftTypes(Enum):
     EMBRAER_PHENOM_300 = auto()
     TBM_930 = auto()
     TBM_850 = auto()
+    HONDA_HJET = auto()
 
     @staticmethod
     def list():
@@ -70,6 +71,8 @@ class AircraftTypes(Enum):
             return "Bombardier CRJ700-ER"
         elif self.value == self.BOMBARDIER_DASH8_Q400.value:
             return "Bombardier Dash-8 Q400"
+        elif self.value == self.HONDA_HJET.value:
+            return "Honda HA-420 HondaJet"
         else:
             return f"Unknown plane type - {self.name}"
 

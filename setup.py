@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name='pyfseconomy',
-    version='0.2.0',
+    version='0.2.1',
     author="Paul Hampson",
     description='Library for interacting with the FS Economy API',
     long_description=long_description,

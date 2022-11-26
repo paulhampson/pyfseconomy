@@ -103,7 +103,8 @@ def info_wizard(user_search=False):
     """
     if not user_search:
         plane_list = [fse.AircraftTypes.KING_AIR_350, fse.AircraftTypes.TBM_930, fse.AircraftTypes.CITATION_X,
-                      fse.AircraftTypes.C172_SKYHAWK, fse.AircraftTypes.CESSNA_GRAND_CARAVAN, fse.AircraftTypes.MSFS_A320]
+                      fse.AircraftTypes.C172_SKYHAWK, fse.AircraftTypes.CESSNA_GRAND_CARAVAN,
+                      fse.AircraftTypes.MSFS_A320, fse.AircraftTypes.HONDA_HJET]
         print("Select plane type:")
         for idx, plane in enumerate(plane_list):
             print(f"\t[{idx}] {plane}")
