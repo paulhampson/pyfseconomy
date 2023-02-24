@@ -87,7 +87,7 @@ class Aircraft:
     FUEL_KG_PER_GAL = 2.687344961
     PAX_WEIGHT_KG = 77
 
-    def __init__(self, make_model, mtow, seats, crew, empty_weight, fuel_total):
+    def __init__(self, make_model, mtow, seats, crew, empty_weight, fuel_total, max_cargo=0):
         """
 
         :param make_model: Make and model string
@@ -96,6 +96,7 @@ class Aircraft:
         :param crew: Number of required crew
         :param empty_weight: Empty weight
         :param fuel_total: Amount of fuel the plane is capable of carrying in total
+        :param max_cargo: Amount of cargo the plane is capable of carrying
         """
         self._name = make_model
         self._mtow = mtow
@@ -103,6 +104,7 @@ class Aircraft:
         self._crew = crew
         self._empty_weight = empty_weight
         self._fuel_total_gal = fuel_total
+        self._cargo = max_cargo
 
     def get_name(self):
         """
@@ -125,14 +127,18 @@ class Aircraft:
         Return the amount of pax that can be carried given the fuel load in % or the total amount of cargo that can be
         carried.
 
+        Cargo value is the minimum of either the MTOW minus empty weight minus fuel weight OR the max cargo defined for
+        the plan model.
+
         :param fuel_percent: Percentage total fuel load for the aircraft
-        :return: Number of pax with onboard fuel and the maximum total available payload (including pax) for the fuel
+        :return: Number of pax with onboard fuel and the maximum total available payload for the fuel
         """
         fuel_weight = fuel_percent * self._fuel_total_gal * self.FUEL_KG_PER_GAL
-        available_payload = self._mtow - self._empty_weight - fuel_weight
-        available_pax = min(self.get_max_pax(), int(available_payload / self.PAX_WEIGHT_KG))
+        potential_payload = self._mtow - self._empty_weight - fuel_weight
+        available_cargo = min(potential_payload, self._cargo)
+        available_pax = min(self.get_max_pax(), int(potential_payload / self.PAX_WEIGHT_KG))
 
-        return available_pax, available_payload
+        return available_pax, available_cargo
 
     @classmethod
     def aircraft_from_data(cls, csv_data):
@@ -146,4 +152,4 @@ class Aircraft:
         fuel_total += csv_data['RExt2'] + csv_data['RTip'] + csv_data['RAux'] + csv_data['RMain']
 
         return cls(csv_data['MakeModel'], csv_data['MTOW'], csv_data['Seats'], csv_data['Crew'],
-                   csv_data['EmptyWeight'], fuel_total)
+                   csv_data['EmptyWeight'], fuel_total, csv_data['MaxCargo'])
