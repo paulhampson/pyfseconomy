@@ -103,6 +103,7 @@ def info_wizard(user_search=False):
     """
     if not user_search:
         plane_list = [fse.AircraftTypes.KING_AIR_350, fse.AircraftTypes.TBM_930, fse.AircraftTypes.CITATION_X,
+                      fse.AircraftTypes.CITATION_LONGITUDE, fse.AircraftTypes.CITATION_CJ4_MSFS,
                       fse.AircraftTypes.C172_SKYHAWK, fse.AircraftTypes.CESSNA_GRAND_CARAVAN,
                       fse.AircraftTypes.MSFS_A320, fse.AircraftTypes.HONDA_HJET]
         print("Select plane type:")
@@ -151,6 +152,6 @@ if __name__ == '__main__':
         run_again = "y" != input("\n\nQuit (Y/[N])? ").lower()
         if run_again:
             if "y" == input("New requirements (Y/[N])? ").lower():
-                requested_plane, min_pay, count, distance, trip_type = info_wizard()
+                requested_plane, min_pay, count, distance, trip_type = info_wizard(user_plane_search)
 
     print("Goodbye!")

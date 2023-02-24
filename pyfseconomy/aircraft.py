@@ -21,6 +21,7 @@ class AircraftTypes(Enum):
     CESSNA_GRAND_CARAVAN = auto()
     CITATION_CJ4_MSFS = auto()
     CITATION_X = auto()
+    CITATION_LONGITUDE = auto()
     EMBRAER_PHENOM_300 = auto()
     TBM_930 = auto()
     TBM_850 = auto()
@@ -73,6 +74,8 @@ class AircraftTypes(Enum):
             return "Bombardier Dash-8 Q400"
         elif self.value == self.HONDA_HJET.value:
             return "Honda HA-420 HondaJet"
+        elif self.value == self.CITATION_LONGITUDE.value:
+            return "Cessna Citation Longitude"
         else:
             return f"Unknown plane type - {self.name}"
 
